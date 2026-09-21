@@ -1,4 +1,5 @@
-// Placeholder para dados dos enigmas.
-// Estrutura futura: array de puzzles com perguntas, opções e respostas.
+import { enigmaSala3 } from './sala3.js';
 
-export const puzzles = [];
+// Leo — os demais integrantes podem acrescentar seus enigmas a este catálogo.
+export const puzzles = [enigmaSala3];
+

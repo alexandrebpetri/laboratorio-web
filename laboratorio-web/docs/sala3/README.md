@@ -1,68 +1,72 @@
-# Leo — Sala 3: Sistema de refrigeração
+# Leo — Sala 3: sistema de refrigeração
 
-## Escopo e responsabilidade
+## Responsabilidade e objetivo
 
-Frontend React funcional e independente da Sala 3. O texto de programação pede interface, interações, pontos de integração, documentação e casos de uso. Portanto, a entrega inclui a validação local da alternativa, dica, solicitação de penalidade e evento de conclusão; não é apenas um desenho estático.
+Frontend React da Sala 3: apresentar o desenho original e o enigma, conferir a resposta, mostrar dica, solicitar penalidade, animar a temperatura e informar o desbloqueio da porta secreta. A imagem é estática e idêntica ao JPEG enviado; o desbloqueio aparece por mensagem e botão, sem redesenhar o cenário.
 
-O cenário é o JPEG original enviado por Leo, copiado sem alterações para `cenario-original.jpeg`. É exibido inteiro, mantendo a proporção, sem recortes, filtros ou elementos sobrepostos. A imagem permanece estática; o desbloqueio da porta é informado no painel e habilita o botão de avanço. Não foram criadas novas artes.
+Leo cuida desta sala. Pablo fornece o cronômetro; David fornece sons; o responsável pela Sala Principal conecta estado e rotas. Banco e ranking permanecem com seus responsáveis. Nenhuma API ou banco foi alterado.
 
-Leo: componente, visual, enigma e documentação da Sala 3.
-Pablo: cronômetro contínuo e aplicação real de penalidades.
-Responsável pela Sala Principal/Routes: acesso sequencial, estado global, navegação e término da partida.
-David: sons, conectados por `onSom`.
-Gabriel Ortiz e Lucas: banco compartilhado e ranking; esta sala não acessa banco diretamente.
-João: organização e incorporação dos arquivos ao projeto geral.
+## Organização conforme o README do projeto
 
-## Executar a demonstração
+| Pasta | Arquivos e responsabilidade |
+|---|---|
+| `src/components/salas/sala3/` | `Sala3.jsx` e `Sala3.css`: interface e estilo local. |
+| `src/data/` | `sala3.js`: textos, alternativas e resposta; `puzzles.js`: catálogo que registra o enigma. |
+| `src/game/` | `sala3.js`: verificação da resposta e condições para interagir. |
+| `src/hooks/` | Nenhum hook adicional necessário. Os hooks gerais existentes pertencem à integração. |
+| `src/styles/` | Base global existente; a sala herda a fonte e utiliza suas variáveis de cores. |
+| `public/assets/backgrounds/` | `sala3-original.jpeg`: desenho original, sem modificações. |
+| `demos/sala3/` | `index.html`, `main.jsx` e `vite.config.js`: teste isolado. |
+| `docs/sala3/` | Este guia, casos de uso, integração e registro de validação. |
 
-Abra o terminal na pasta que contém `package.json` (`laboratorio-web/laboratorio-web`):
+Não é necessário criar arquivos em todas as pastas. `rooms.js` e a lógica global são reservados para o fluxo completo. Os componentes genéricos atuais são placeholders, por isso a sala ainda usa elementos HTML nativos.
+
+## Executar e compilar
+
+Abra o terminal na pasta interna `laboratorio-web`, onde está `package.json`:
 
 ```powershell
 npm install
 npm run dev -- --config demos/sala3/vite.config.js
 ```
 
-Abra `http://127.0.0.1:5173/demos/sala3/index.html`. Se a porta estiver ocupada, use a porta indicada pelo Vite. A raiz `/` não é a demonstração; a entrada é `/demos/sala3/index.html`.
-
-O rodapé de demonstração tem controles de reinício, bloqueio de acesso e tempo esgotado. O tempo inicial de 180 segundos é simulado, sem contagem contínua; diminui apenas com penalidades. Esses controles não fazem parte do componente entregue ao jogo.
+Abra `/demos/sala3/index.html` no endereço e porta indicados pelo Vite. Abrir somente `/` não abre a demonstração.
 
 ```powershell
 npm run build -- --config demos/sala3/vite.config.js
 npm run preview -- --config demos/sala3/vite.config.js
 ```
 
-A compilação independente vai para `dist-sala3`. Abra `/demos/sala3/index.html` no endereço informado pelo preview. Esta entrada separada preserva o `App.jsx` da integração principal, que atualmente é um placeholder.
+O resultado fica em `dist-sala3`. A imagem pública é copiada junto. Dependências: React 18, React DOM e Vite já declarados no projeto; nenhuma biblioteca adicional. A documentação original também indica Yarn: use o gerenciador que a equipe padronizar, sem manter lockfiles divergentes.
 
 ## Funcionamento
 
-1. O integrador libera a Sala 3 após a Sala 2 e informa que a partida está ativa.
-2. O jogador seleciona uma alternativa e confirma em “Confirmar resposta”. Selecionar sozinho não aplica penalidade.
-3. A, C ou D: apresenta dica, limpa a seleção e solicita penalidade. Padrão provisório: 5 segundos, configurável; a duração não foi definida no roteiro.
-4. B: explica que calor flui espontaneamente do quente para o frio, emite a conclusão uma vez, anima 120 → 110 → 100 → 90°C e libera o botão da porta 4 sem modificar o desenho.
-5. “Entrar na porta secreta” solicita navegação; não implementa o enigma 4 nem declara vitória.
-6. Tempo zero ou partida inativa bloqueia respostas e avanço. O controlador principal decide a tela de Game Over (UC13).
+1. Receber liberação da Sala 2 e estado de partida ativa.
+2. Selecionar alternativa e confirmar; selecionar sozinho não penaliza.
+3. A, C ou D: mostrar dica e solicitar penalidade de tempo.
+4. B: emitir conclusão uma vez, explicar calor do quente para o frio e reduzir a temperatura ilustrativa de 120 para 90°C.
+5. Mostrar “Porta secreta desbloqueada” e permitir solicitar navegação para a Sala 4.
+6. Bloquear respostas e avanço quando acabar o tempo ou a partida ficar inativa.
 
-A redução de temperatura é ilustrativa e seu temporizador controla somente a animação; não mede o tempo da partida. O enigma trata da transferência espontânea de calor. Uma máquina refrigeradora real pode transferir calor no sentido contrário consumindo trabalho externo; essa situação não é a pergunta apresentada.
+A penalidade padrão de 5 segundos é provisória e configurável, pois o texto de programação não definiu o valor. O temporizador interno anima somente a temperatura. O cronômetro contínuo deve existir no controlador principal. A demo usa 180 segundos simulados e controles de teste, que não pertencem ao componente final.
 
-## Entradas e saídas
+## Entradas, saídas e eventos
 
-| Propriedade | Tipo / padrão | Contrato |
+| Propriedade | Padrão | Uso |
 |---|---|---|
-| `salaLiberada` | boolean / false | Integrador confirma conclusão da Sala 2. |
-| `partidaAtiva` | boolean / false | Controlador informa se pode jogar. |
-| `tempoRestante` | número de segundos / null | Valor do cronômetro externo para bloqueio. Zero bloqueia; null permite depender de partidaAtiva. Não desenha um segundo cronômetro. |
-| `concluida` | boolean / false | Estado persistido pelo controlador para remontagens e troca de rotas. |
-| `penalidadeSegundos` | número / 5 | Configuração compartilhada com o cronômetro. |
-| `onPenalidade` | função opcional | Recebe `{ salaId: 3, segundos, motivo: 'resposta-incorreta' }`. |
-| `onConcluir` | função opcional | Recebe `{ salaId: 3, proximaSalaId: 4, resposta: 'B' }`, uma vez por resolução na montagem. |
-| `onAvancar` | função opcional | Recebe `{ salaId: 3, destino: 4 }`. Sem callback o botão fica desabilitado. |
-| `onSom` | função opcional | Recebe `acerto`, `erro` ou `porta`. Não reproduz áudio sozinho. |
+| `salaLiberada` | false | Sala 2 já concluída. |
+| `partidaAtiva` | false | Controlador autoriza jogar. |
+| `tempoRestante` | null | Segundos externos; zero bloqueia. Sem número, depende de partidaAtiva. Não desenha cronômetro. |
+| `concluida` | false | Conclusão mantida pelo estado global entre rotas. |
+| `penalidadeSegundos` | 5 | Valor configurável da penalidade. |
+| `onPenalidade` | opcional | `{ salaId: 3, segundos, motivo: 'resposta-incorreta' }`. |
+| `onConcluir` | opcional | `{ salaId: 3, proximaSalaId: 4, resposta: 'B' }`. |
+| `onAvancar` | opcional | `{ salaId: 3, destino: 4 }`; sem callback, botão desabilitado. |
+| `onSom` | opcional | `acerto`, `erro` ou `porta`. |
 
-Callbacks são notificações síncronas: o integrador deve capturar falhas de serviços assíncronos fora da sala e não lançar exceções para a interface. O controlador deve validar o estado atual ao receber eventos, para resolver possíveis coincidências entre uma resposta e o fim do tempo. A conclusão deve ser idempotente no estado global.
+## Integração no jogo completo
 
-## Exemplo para a pessoa responsável pela integração
-
-Trecho ilustrativo: as variáveis e funções abaixo pertencem ao controlador da equipe, não são APIs já implementadas.
+No mesmo repositório, importar o componente; não importar a demo. Exemplo ilustrativo: as funções abaixo serão fornecidas pelo controlador da equipe.
 
 ```jsx
 import Sala3 from './components/salas/sala3/Sala3';
@@ -81,64 +85,24 @@ import Sala3 from './components/salas/sala3/Sala3';
 />
 ```
 
-Mantenha o cronômetro e as salas concluídas acima das rotas. Ao voltar para uma sala concluída, repasse `concluida={true}`: isso evita novo enigma/novo evento. Uma nova partida deve trocar `key` e redefinir o estado global. Alterar apenas `concluida` para false na mesma montagem não reinicia o estado local. Recarregar a demonstração inicia um teste novo; persistência entre recargas é responsabilidade do jogo principal.
+Manter estado e cronômetro acima das rotas. Ao retornar à sala, passar `concluida=true` para impedir repetição. Ao iniciar outra partida, trocar a key e redefinir o estado global. O controlador deve validar eventos quando coincidem com tempo esgotado e impedir conclusão duplicada. Callbacks não devem lançar exceções para a interface; tratar falhas de serviços no controlador.
 
-## Arquivos e dependências
+Importar `src/styles/global.css` e `src/styles/variables.css` uma vez na entrada do jogo. A demo faz isso; a entrada principal existente ainda importa apenas global.css. A sala possui valores de reserva, mas todas as salas precisam seguir a mesma base para ter aparência consistente.
 
-- `src/components/salas/sala3/Sala3.jsx`: interface e eventos.
-- `src/components/salas/sala3/Sala3.css`: layout isolado e responsivo, com as variáveis comuns de cores.
-- `src/components/salas/sala3/cenario-original.jpeg`: desenho original, obrigatório na entrega.
-- `src/components/salas/sala3/enigma.js`: alternativas e condições de interação.
-- `demos/sala3/main.jsx`: adaptador de demonstração, não copiar para o jogo final.
-- `demos/sala3/index.html` e `demos/sala3/vite.config.js`: execução/compilação isolada.
-- `docs/sala3/README.md`, `casos-de-uso.md` e `validacao.md`: documentação.
-- `docs/sala3/integracao.md`: contrato reservado para integração.
+Para entregar fora do Git, incluir o componente e CSS, `src/data/sala3.js`, `src/game/sala3.js` e a imagem no caminho público acima. Registrar o enigma no catálogo `puzzles.js` sem sobrescrever os demais enigmas. Não basta copiar apenas a pasta do componente.
 
-Utiliza React 18, React DOM e Vite já declarados no projeto. Nenhuma biblioteca visual adicional. Para integrar, copie a pasta `src/components/salas/sala3` (a demonstração está separada em `demos/sala3`) e a documentação. Não substitua o App ou o package.json dos colegas. Todos os seletores de estilo são limitados a `.sala3`.
+## Pontos reservados e limites
 
-## Locais reservados
+- **[LOCAL PARA FRONTEND / ROTA]**: importar a sala na rota geral e ligar onAvancar à Sala 4.
+- **[LOCAL PARA SERVIÇO]**: conectar cronômetro e sons.
+- **[LOCAL PARA BACKEND / SUPABASE]**: descrito em `integracao.md`; esta sala não exige API nem credenciais. Persistência, se adotada, usa o serviço compartilhado.
+- **[LOCAL PARA INTEGRAÇÃO]**: estado global, validação de sequência e encerramento da partida.
+- **[LOCAL PARA DOCUMENTAÇÃO]**: casos de uso em `casos-de-uso.md`, testes e limites em `validacao.md`.
 
-- **[LOCAL PARA FRONTEND]**: importar `Sala3.jsx` na rota definida pela equipe.
-- **[LOCAL PARA ROTA]**: ligar `onAvancar` à porta 4 e validar o acesso à Sala 3 no roteador principal.
-- **[LOCAL PARA SERVIÇO]**: ligar `onSom` ao módulo de David e `onPenalidade` ao módulo de Pablo.
-- **[LOCAL PARA BACKEND]**: ver `docs/sala3/integracao.md`; nenhuma API inventada ou chamada HTTP nesta entrega.
-- **[LOCAL PARA SUPABASE]**: se o jogo persistir progresso, o serviço central da equipe salva a conclusão no banco compartilhado. A Sala 3 não requer cliente, tabela, credencial ou banco próprio.
-- **[LOCAL PARA INTEGRAÇÃO]**: estado global, término da partida e callbacks acima.
-- **[LOCAL PARA DOCUMENTAÇÃO]**: incorporar os casos de uso desta pasta à documentação geral.
+A integração completa ainda depende dos módulos dos colegas. App.jsx, os hooks gerais e as regras gerais atuais são placeholders; isso não é funcionalidade pendente da Sala 3.
 
-## CSS comum e entrega mínima
+## Git
 
-A base existente da equipe é `src/styles/global.css` (fonte e regras gerais) e `src/styles/variables.css` (cores). O componente herda a fonte e consome `--color-background`, `--color-surface`, `--color-text` e `--color-accent`, com valores de reserva iguais aos existentes. Nenhum desses arquivos compartilhados foi alterado.
+Incluir os arquivos da sala nas pastas da tabela e a documentação. As movimentações removem os antigos `enigma.js` e `cenario-original.jpeg` de dentro do componente; incluir também essas remoções no próximo commit. Conferir `git status` antes de enviar.
 
-O integrador deve importar os dois estilos comuns uma vez no ponto de entrada do jogo. A demonstração já faz isso. As outras salas precisam usar a mesma base para que o conjunto tenha aparência consistente; isso não ocorre automaticamente. O CSS local é limitado a `.sala3`, sem regras em `:root` ou `body`, e não desenha cabeçalho, navegação geral ou cronômetro.
-
-Para incorporar a parte do Leo, copiar somente estes quatro arquivos, mantendo-os juntos:
-
-- `Sala3.jsx`
-- `Sala3.css`
-- `enigma.js`
-- `cenario-original.jpeg`
-
-Depois, importar o componente e conectar as propriedades e callbacks do exemplo acima. `demos/sala3/main.jsx`, `demos/sala3/index.html` e `demos/sala3/vite.config.js` servem apenas para testar a entrega separadamente. No ZIP, os arquivos em `src/styles` são cópias da base atual para executar a demonstração: não sobrescrever a base dos colegas caso ela tenha sido atualizada.
-
-O contrato foi testado com um adaptador local. A integração definitiva só pode ser confirmada quando o cronômetro, as rotas e os sons reais forem conectados.
-
-
-## Organização no repositório compartilhado
-
-A estrutura original do projeto foi preservada. A contribuição de Leo está separada assim:
-
-```text
-laboratorio-web/                  # pasta que já contém package.json
-├── src/components/salas/sala3/   # componente, CSS, enigma e imagem original
-├── demos/sala3/                  # teste independente: index.html, main.jsx, vite.config.js
-├── docs/sala3/                   # README, casos de uso, integração e validação
-├── .gitignore                   # ignora dependências e saída da demonstração
-└── package-lock.json            # fixa as versões instaladas para a equipe
-```
-
-Os arquivos comuns preexistentes (App.jsx, main.jsx, package.json, vite.config.js e src/styles) não foram modificados. Nenhuma pasta de backend foi acrescentada ao frontend: os pontos de integração estão em `docs/sala3/integracao.md`.
-
-No mesmo repositório, os colegas não precisam copiar a sala: após receberem o commit, basta importá-la pelo caminho documentado e conectar os callbacks. As pastas `demos` e `docs` podem receber módulos dos colegas em subpastas próprias, sem editar os arquivos de Leo.
-
-Para o commit da Sala 3, incluir apenas as três pastas acima, `.gitignore` e `package-lock.json`. Não incluir node_modules, dist-sala3 nem o ZIP externo. Conferir `git status` e as diferenças antes de fazer commit/push. Nenhum commit ou push foi realizado por esta organização.
+`node_modules` e `dist-sala3` estão ignorados. O ZIP fica fora do repositório. Esta revisão não fez commit ou push.

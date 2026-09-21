@@ -1,7 +1,8 @@
 // Leo — frontend da Sala 3. Cronômetro, som e rotas vêm do integrador.
 import { useEffect, useRef, useState } from 'react';
-import cenarioOriginal from './cenario-original.jpeg';
-import { OPCOES, avaliarResposta, podeInteragir } from './enigma';
+const cenarioOriginal = import.meta.env.BASE_URL + 'assets/backgrounds/sala3-original.jpeg';
+import { enigmaSala3 } from '../../../data/sala3';
+import { avaliarResposta, podeInteragir } from '../../../game/sala3.js';
 import './Sala3.css';
 
 export default function Sala3({
@@ -42,19 +43,19 @@ export default function Sala3({
       setResolvidaLocal(true);
       setFeedback(null);
       // [LOCAL PARA INTEGRAÇÃO] Registrar conclusão e liberar a porta 4.
-      onConcluir?.({ salaId: 3, proximaSalaId: 4, resposta: 'B' });
+      onConcluir?.({ salaId: enigmaSala3.salaId, proximaSalaId: enigmaSala3.proximaSalaId, resposta: enigmaSala3.respostaCorreta });
       onSom?.('acerto');
     } else {
-      setFeedback('Resposta incorreta. Pense em uma xícara quente: ela cede calor ao ambiente mais frio.');
+      setFeedback(enigmaSala3.dica);
       setSelecionada(null);
       // [LOCAL PARA INTEGRAÇÃO] Pablo aplica a penalidade no cronômetro único.
-      onPenalidade?.({ salaId: 3, segundos: penalidade, motivo: 'resposta-incorreta' });
+      onPenalidade?.({ salaId: enigmaSala3.salaId, segundos: penalidade, motivo: 'resposta-incorreta' });
       onSom?.('erro');
     }
   }
 
   return (
-    <section className="sala3" aria-label="Sala 3 — Sistema de refrigeração">
+    <section className="sala3" aria-label={enigmaSala3.titulo}>
       <img
         className="sala3__cenario"
         src={cenarioOriginal}
@@ -64,20 +65,20 @@ export default function Sala3({
       />
 
       <div className="sala3__painel">
-        <h1>Sala 3 — Sistema de refrigeração</h1>
-        <p><strong>Robô:</strong> “O sistema de emergência precisa transferir energia térmica para resfriar o laboratório.”</p>
+        <h1>{enigmaSala3.titulo}</h1>
+        <p><strong>Robô:</strong> “{enigmaSala3.falaRobo}”</p>
         <p>Temperatura do laboratório: <strong>{temperatura}°C</strong></p>
 
         <form onSubmit={responder}>
           <fieldset disabled={!disponivel}>
-            <legend>Em qual direção ocorre espontaneamente a transferência de calor?</legend>
-            {OPCOES.map((opcao) => (
+            <legend>{enigmaSala3.pergunta}</legend>
+            {enigmaSala3.opcoes.map((opcao) => (
               <label className="sala3__opcao" key={opcao.id}>
                 <input
                   type="radio"
                   name="sala3-resposta"
                   value={opcao.id}
-                  checked={resolvida ? opcao.id === 'B' : selecionada === opcao.id}
+                  checked={resolvida ? opcao.id === enigmaSala3.respostaCorreta : selecionada === opcao.id}
                   onChange={() => setSelecionada(opcao.id)}
                 />
                 <span><strong>{opcao.id})</strong> {opcao.texto}</span>
@@ -99,7 +100,7 @@ export default function Sala3({
           ) : resolvida ? (
             <>
               <p><strong>Sistema de refrigeração ativado!</strong></p>
-              <p>O calor flui espontaneamente do corpo quente para o corpo frio.</p>
+              <p>{enigmaSala3.explicacao}</p>
               <p><strong>Porta secreta desbloqueada.</strong></p>
             </>
           ) : feedback ? (
@@ -113,7 +114,7 @@ export default function Sala3({
             disabled={!ativa || !salaLiberada || !onAvancar}
             onClick={() => {
               onSom?.('porta');
-              onAvancar?.({ salaId: 3, destino: 4 });
+              onAvancar?.({ salaId: enigmaSala3.salaId, destino: enigmaSala3.proximaSalaId });
             }}
           >
             Entrar na porta secreta
@@ -123,3 +124,4 @@ export default function Sala3({
     </section>
   );
 }
+

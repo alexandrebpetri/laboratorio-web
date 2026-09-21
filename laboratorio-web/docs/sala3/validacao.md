@@ -28,3 +28,9 @@ A porta é desbloqueada por mensagem e botão, preservando o desenho estático. 
 ## Conferência após organização
 
 A demonstração foi movida para `demos/sala3`, os imports foram ajustados e a compilação passou novamente (35 módulos). O navegador abriu a nova URL, carregou o JPEG original e não registrou erro de console. A lógica da sala não foi alterada nesta organização.
+
+Após separar os dados em src/data/sala3.js e registrar em puzzles.js, a compilação passou com 36 módulos. O cenário original e o contrato de eventos permanecem iguais.
+
+
+Revisão das pastas do README: cenário movido para public/assets/backgrounds/sala3-original.jpeg; regras para src/game/sala3.js. Compilação passou com 35 módulos. Teste executável verificou catálogo com um enigma da Sala 3, alternativas A/C/D incorretas, B correta, entrada inválida e bloqueios por acesso, partida inativa, conclusão e tempo zero. SHA-256 do JPEG continua igual ao original.
+
