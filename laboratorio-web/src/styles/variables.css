@@ -1,0 +1,9 @@
+/* Variáveis globais para tokens de design do projeto. */
+
+:root {
+  --color-background: #0b0b0d;
+  --color-surface: #1d1d22;
+  --color-accent: #5eead4;
+  --color-text: #f5f5f5;
+  --color-muted: #a1a1aa;
+}
