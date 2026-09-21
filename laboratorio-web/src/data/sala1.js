@@ -3,6 +3,13 @@
 
 const API_URL = 'http://localhost:3000';
 
+const opcoesSala1 = [
+  { id: 'A', texto: 'A pressão diminuirá.' },
+  { id: 'B', texto: 'A pressão aumentará.' },
+  { id: 'C', texto: 'A pressão permanecerá constante.' },
+  { id: 'D', texto: 'A pressão ficará igual a zero.' },
+];
+
 export async function buscarEnigmaSala1() {
   const resposta = await fetch(`${API_URL}/api/enigmas/1`);
 
@@ -18,7 +25,7 @@ export async function buscarEnigmaSala1() {
     titulo: `Sala ${enigma.ordem} — ${enigma.titulo}`,
     falaRobo: 'O laboratório está aquecendo o cilindro.',
     pergunta: enigma.descricao,
-    opcoes: enigma.opcoes ?? [],
+    opcoes: enigma.opcoes?.length ? enigma.opcoes : opcoesSala1,
     respostaCorreta: enigma.resposta_correta,
     dica: enigma.dica,
     explicacao:
