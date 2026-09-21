@@ -7,8 +7,8 @@ A estrutura também pode evoluir para um backend em JavaScript/ES6+, o que facil
 ## Como rodar
 
 ```bash
-npm install
-npm run dev
+yarn install
+yarn dev
 ```
 
 ## Estrutura básica
